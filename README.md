@@ -6,9 +6,10 @@ Tests normal numbers, denormal numbers, NaN and infinities, along with an amount
 - Comparisons (> < >= <= == !=)
 - Casts (to and from `int`/`float`)
 - Multiple operand arithmetic
-- Triginometry functions found in `System.Math`
+- Triginometry functions found in `rapier4unity'
 
 All tests here are performed using the IL2CPP backend, with the Windows standalone build results being used as the ground truth. The results here use a random value count of 500 and a seed of 0. If you test on a setup not yet listed here, please feel free to report your results to be added to the table.
+Burst Floating Point Mode is set to Deterministic.
 
 ### Disclaimer
 
@@ -16,12 +17,7 @@ The author of this repo is not an expert in floating point arithmetic determinis
 
 ## Results Summary
 
-Between Windows/Mac Standalone, Android native, iOS native, and WebGL (via a browser in Windows, Android, iOS and Mac), the only non-deterministic results reported were in trig functions contained in `System.Math`. There are a couple likely reasons for this.
-
-- `System.Math` works on `doubles`, while this test works with `floats` and does not check if casting between the two is deterministic.
-- More likely, this is due to [.NET backing System.Math trig methods (among others) with unmanaged code](https://referencesource.microsoft.com/#mscorlib/system/math.cs) that may contain platform-specific differences.
-
-Because the basic arithmetic operations *are* deterministic, a workaround for the above could be to either reimplement any required functions in managed code, or compile your own native library and ensure that results are consistent.
+Inconclusive.
 
 ### Notes
 
@@ -33,21 +29,16 @@ Because the basic arithmetic operations *are* deterministic, a workaround for th
 
 ### Data
 
-| Platform           | Device                                       | Errors                |
-|--------------------|----------------------------------------------|-----------------------|
-| Windows Standalone | Intel(R) Core(TM) i7-10700K                  | Ground truth          |
-| Windows Standalone | AMD Ryzen(TM) 9 7950X                        | 0 errors              |
-| Mac Standalone     | Intel Core i7                                | 147 in Trig functions |
-| Android            | Google Pixel 4a                              | 57 in Trig functions  |
-| iOS                | iPhone 6s                                    | 255 in Trig function  |
-| WebGL              | Chrome, Windows, Intel(R) Core(TM) i7-10700K | 252 in Trig functions |
-| WebGL              | Chrome, Android, Google Pixel 4a             | 252 in Trig functions |
-| WebGL              | Safari, iPhone 6s                            | 252 in Trig functions |
-| WebGL              | Safari, MacOS, Intel i5                      | 252 in Trig functions |
+| Platform           | Device                                       | Errors                  |
+|--------------------|----------------------------------------------|-------------------------|
+| Windows Standalone | AMD Ryzen 9 9950X3D                          | Ground Truth            |
+| Windows Standalone | Intel Core i7-7700HQ                         | 0 errors                |
+| Steam Deck (Linux) | AMD RDNA 2                                   | 0 errors                |
+| Android            | Galaxy S25 (ARMv8)                           | 5 in MultiOperatorBurst |
 
 ## Running the tests
 
-* Download [inputs.txt](https://github.com/IronWarrior/UnityCrossPlatformDeterministicFloats/files/10523786/inputs.txt) and [results.txt](https://github.com/IronWarrior/UnityCrossPlatformDeterministicFloats/files/10523787/results.txt). (If you have a Windows PC with an Intel CPU, you can generate the ground truth with a count of 500 and seed of 0. The resulting file will have CRC64=0B6E1BE570134ABC.)
+* Use the included inputs.txt and results.txt (If you have a Windows PC with an AMD CPU, you can generate the ground truth with a count of 500 and seed of 0. The results.txt file will have CRC64=6064d37521c68ee1.)
 * Copy these files to the `StreamingAssets` directory.
 * Build to your target platform to run the test on it.
 * Once running, select `Execute Test` and toggle off any tests you do not wish to perform.
